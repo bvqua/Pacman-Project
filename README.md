@@ -15,7 +15,7 @@ Java:
 - Move: Up, down, left, and right arrow keys
 - Exit: q
 - Toggle edit mode: e
- - While in edit mode:
+  While in edit mode:
  - Add walls (default): a
  - Clear all walls: c
  - Remove walls: r
