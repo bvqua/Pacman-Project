@@ -11,7 +11,7 @@ Java:
   3. Navigate to where the folder is located (cd Pacwoman-Java)
   4. Compile and run ("javac Game.java" in terminal to compile, then "java Game" to run)
 
-# Controls
+# Controls (There is no edit mode for html)
 Move: Up, down, left, and right arrow keys  
 Exit: q
 Toggle edit mode: e  
