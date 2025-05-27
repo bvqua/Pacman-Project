@@ -12,9 +12,9 @@ Java:
   4. Compile and run ("javac Game.java" in terminal to compile, then "java Game" to run)
 
 # Controls
-- Move: Up, down, left, and right arrow keys
-- Exit: q
-- Toggle edit mode: e  
+Move: Up, down, left, and right arrow keys  
+Exit: q  
+Toggle edit mode: e  
 While in edit mode:
  - Add walls (default): a
  - Clear all walls: c
@@ -23,5 +23,5 @@ While in edit mode:
  - Add fruits: f
  - Add pellets: p
  - Exit edit mode: e (again)
-- Save map: s
-- Load map: l
+Save map: s
+Load map: l
