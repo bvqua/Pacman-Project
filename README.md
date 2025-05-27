@@ -13,7 +13,7 @@ Java:
 
 # Controls
 Move: Up, down, left, and right arrow keys  
-Exit: q  
+Exit: q
 Toggle edit mode: e  
 While in edit mode:
  - Add walls (default): a
@@ -22,6 +22,6 @@ While in edit mode:
  - Add ghosts: g
  - Add fruits: f
  - Add pellets: p
- - Exit edit mode: e (again) <br/>
+ - Exit edit mode: e (again)  
 Save map: s
 Load map: l
