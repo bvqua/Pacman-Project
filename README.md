@@ -15,13 +15,13 @@ Java:
 Move: Up, down, left, and right arrow keys
 Exit: q
 Toggle edit mode: e
-    While in edit mode:
-    Add walls (default): a
-    Clear all walls: c
-    Remove walls: r
-    Add ghosts: g
-    Add fruits: f
-    Add pellets: p
-    Exit edit mode: e (again)
+  While in edit mode:
+  Add walls (default): a
+  Clear all walls: c
+  Remove walls: r
+  Add ghosts: g
+  Add fruits: f
+  Add pellets: p
+  Exit edit mode: e (again)
 Save map: s
 Load map: l
