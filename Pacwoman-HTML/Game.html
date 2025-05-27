@@ -1,0 +1,667 @@
+<b>Name:</b> Brian Quach
+<b>Date:</b> 04/24/2024
+<b>Description:</b> Ms. Pacman javascript project
+
+<head>
+	<title>Ms. Pacman</title>
+	<meta charset="UTF-8">
+</head>
+<body>
+<br>
+<canvas id="myCanvas" width="500" height="500" style="border:1px solid #ffffff; background-color: rgb(8, 1, 53);"></canvas>
+
+<script type="text/javascript">
+
+class Sprite
+{
+	constructor(x1, y1, w1, h1, image_url)
+	{
+		this.x = x1;
+		this.y = y1;
+		this.w = w1;
+		this.h = h1;
+		this.image = new Image();
+		this.image.src = image_url;
+	}
+
+	draw(ctx, scrollPosY) 
+	{
+		ctx.drawImage(this.image, this.x, this.y - scrollPosY, this.w, this.h);
+	}
+}
+
+class Pacman extends Sprite
+{
+	constructor(x, y, w, h, image_url)
+	{
+		super(x, y, w, h, image_url);
+		this.direction = 0;
+		this.speed = 0;
+		this.prevX;
+		this.prevY;
+
+		this.images = [];
+		this.currentImage = 0;
+
+		for (let i = 0; i < 12; i++)
+		{
+			var image = new Image();
+			image.src = "pacmanImages/pacman" + (i+1) + ".png";
+			this.images.push(image);
+		}
+	}
+
+	draw(ctx, scrollPosY) 
+	{
+        if (this.currentImage > 2) 
+		{
+            this.currentImage = 0;
+        }
+
+        ctx.drawImage(this.images[this.currentImage + 3 * this.direction], this.x, this.y - scrollPosY, this.w, this.h);
+    }
+	
+	update()
+	{
+	
+	}
+
+	isPacman()
+	{
+		return true;
+	}
+
+	isWall()
+	{
+		return false;
+	}
+
+	isGhost()
+	{
+		return false;
+	}
+
+	isFruit()
+	{
+		return false;
+	}
+
+	isPellet()
+	{
+		return false;
+	}
+}
+
+class Wall extends Sprite
+{
+	constructor(x, y, w, h, image_url)
+	{
+		super(x, y, w, h, image_url);
+	}
+
+	update() 
+	{
+
+	}
+
+	isPacman()
+	{
+		return false;
+	}
+
+	isWall()
+	{
+		return true;
+	}
+
+	isGhost()
+	{
+		return false;
+	}
+
+	isFruit()
+	{
+		return false;
+	}
+
+	isPellet()
+	{
+		return false;
+	}
+}
+
+class Ghost extends Sprite
+{
+	constructor(x, y, w, h, image_url)
+	{
+		super(x, y, w, h, image_url);
+		this.isBlue = false;
+        this.isEyes = false;
+		this.isClear = false;
+        this.counter = 0;
+	}
+
+	update() 
+	{
+		if (this.isBlue) 
+        {
+			this.image.src = "pacmanImages/ghost1.png";
+			this.counter++;
+			if (this.counter >= 20)
+			{
+				this.isBlue = false;
+				this.isEyes = true;
+				this.isClear = false;
+			}
+        } 
+        else if (this.isEyes) 
+        {
+			this.image.src = "pacmanImages/ghost5.png";
+			this.counter++;
+			if (this.counter >= 40)
+			{
+				this.isBlue = false;
+				this.isEyes = false;
+				this.isClear = true;
+			}
+        }
+	}
+
+	isPacman()
+	{
+		return false;
+	}
+
+	isWall()
+	{
+		return false;
+	}
+
+	isGhost()
+	{
+		return true;
+	}
+
+	isFruit()
+	{
+		return false;
+	}
+
+	isPellet()
+	{
+		return false;
+	}
+}
+
+class Fruit extends Sprite
+{
+	constructor(x, y, w, h, image_url)
+	{
+		super(x, y, w, h, image_url);
+		this.speed = 10;
+	}
+
+	update() 
+	{
+		this.y += this.speed;
+	}
+
+	isPacman()
+	{
+		return false;
+	}
+
+	isWall()
+	{
+		return false;
+	}
+
+	isGhost()
+	{
+		return false;
+	}
+
+	isFruit()
+	{
+		return true;
+	}
+
+	isPellet()
+	{
+		return false;
+	}
+}
+
+class Pellet extends Sprite
+{
+	constructor(x, y, w, h, image_url)
+	{
+		super(x, y, w, h, image_url);
+	}
+
+	update() 
+	{
+		
+	}
+
+	isPacman()
+	{
+		return false;
+	}
+
+	isWall()
+	{
+		return false;
+	}
+
+	isGhost()
+	{
+		return false;
+	}
+
+	isFruit()
+	{
+		return false;
+	}
+
+	isPellet()
+	{
+		return true;
+	}
+}
+
+class Model
+{
+	constructor()
+	{
+		this.sprites = [];
+		this.sprites.push(new Wall(3, 4, 38, 303, "wall.png"));
+		this.sprites.push(new Wall(423, 6, 71, 285, "wall.png"));
+		this.sprites.push(new Wall(42, 21, 384, 16, "wall.png"));
+		this.sprites.push(new Wall(390, 291, 35, 174, "wall.png"));
+		this.sprites.push(new Wall(6, 494, 171, 162, "wall.png"));
+		this.sprites.push(new Wall(367, 834, 129, 242, "wall.png"));
+		this.sprites.push(new Wall(4, 853, 184, 223, "wall.png"));
+		this.sprites.push(new Wall(217, 1356, 102, 88, "wall.png"));
+		this.sprites.push(new Wall(4, 1721, 493, 16, "wall.png"));
+		this.sprites.push(new Wall(376, 1193, 53, 76, "wall.png"));
+		this.sprites.push(new Wall(364, 176, 0, 0, "wall.png"));
+		this.sprites.push(new Wall(295, 110, 0, 0, "wall.png"));
+		this.sprites.push(new Wall(268, 70, 102, 163, "wall.png"));
+		this.sprites.push(new Ghost(288, 332, 50, 50, "pacmanImages/blinky1.png"));
+		this.sprites.push(new Fruit(217, 365, 50, 50, "pacmanImages/fruit2.png"));
+		this.sprites.push(new Fruit(216, 500, 50, 50, "pacmanImages/fruit2.png"));
+		this.sprites.push(new Fruit(215, 311, 50, 50, "pacmanImages/fruit2.png"));
+		this.sprites.push(new Fruit(214, 446, 50, 50, "pacmanImages/fruit2.png"));
+		this.sprites.push(new Fruit(199, 833, 50, 50, "pacmanImages/fruit2.png")); 
+		this.sprites.push(new Pellet(269,404,10,10, "pacmanImages/pellet.png"));
+		this.sprites.push(new Pellet(305,403,10,10, "pacmanImages/pellet.png"));
+		this.sprites.push(new Pellet(351,405,10,10, "pacmanImages/pellet.png"));
+		this.pacman = new Pacman(100, 100, 50, 50, "pacmanImages/pacman1.png");
+		this.sprites.push(this.pacman);
+	}
+
+	collision(s, s2) 
+	{
+		// Check if both objects are defined
+		if (!s || !s2) 
+		{
+			return false;
+		}
+
+		// Sprite 1
+		var sRight = s.x + s.w;
+		var sLeft = s.x;
+		var sBottom = s.y + s.h;
+		var sTop = s.y;
+
+		// Sprite 2
+		var s2Left = s2.x;
+		var s2Right = s2.x + s2.w;
+		var s2Bottom = s2.y + s2.h;
+		var s2Top = s2.y;
+
+        if (sRight < s2Left)
+		{
+			return false;
+		}
+		if (sLeft > s2Right)
+		{
+			return false;
+		}
+		if (sBottom < s2Top)
+		{
+			return false;
+		}
+		if (sTop > s2Bottom)
+		{
+			return false;
+		}
+		return true;
+    }
+
+	getOutOfSprite(a, b) 
+	{
+		const dx = (a.x + a.w / 2) - (b.x + b.w / 2);
+		const dy = (a.y + a.h / 2) - (b.y + b.h / 2);
+		const combinedHalfWidths = (a.w + b.w) / 2;
+		const combinedHalfHeights = (a.h + b.h) / 2;
+
+		if (Math.abs(dx) < combinedHalfWidths && Math.abs(dy) < combinedHalfHeights) 
+		{
+			const overlapX = combinedHalfWidths - Math.abs(dx);
+			const overlapY = combinedHalfHeights - Math.abs(dy);
+
+			if (overlapX >= overlapY) 
+			{
+				if (dy > 0) 
+				{
+					a.y += overlapY;
+				} 
+				
+				else 
+				{
+					a.y -= overlapY;
+				}
+			} 
+			else 
+			{
+				if (dx > 0) 
+				{
+					a.x += overlapX;
+				} 
+				else 
+				{
+					a.x -= overlapX;
+				}
+			}
+		}
+	}
+
+	update()
+	{
+		//check if there is a collision
+		for (let i = 0; i < this.sprites.length; i++)
+		{
+			this.sprites[i].update();
+
+			// for pacman
+			if (this.sprites[i].isPacman())
+			{
+				for (let j = 0; j < this.sprites.length; j++)
+				{
+					// pacman x wall
+					if (this.sprites[j].isWall())
+					{
+						this.tile = this.sprites[j];
+						let checkC = this.collision(this.sprites[i], this.sprites[j]);
+						if (checkC == true)
+						{
+							this.getOutOfSprite(this.sprites[i], this.sprites[j]);
+						}
+					}
+					// pacman x ghost
+					if (this.sprites[j].isGhost()) 
+					{
+						this.ghost = this.sprites[j];
+						let checkC = this.collision(this.sprites[i], this.sprites[j]);
+						if (checkC) 
+						{
+							this.ghost.isBlue = true;
+						}
+					}
+					// pacman x fruit
+					if (this.sprites[j].isFruit()) 
+					{
+						this.fruit = this.sprites[j];
+						let checkC = this.collision(this.sprites[i], this.sprites[j]);
+						if (checkC) 
+						{
+							this.sprites.splice(j, 1);
+							j--;
+						}
+					}
+					// pacman x pellet
+					if (this.sprites[j].isPellet()) 
+					{
+						this.pellet = this.sprites[j];
+						let checkC = this.collision(this.sprites[i], this.sprites[j]);
+						if (checkC) 
+						{
+							this.sprites.splice(j, 1);
+							j--;
+						}
+					}
+				}
+			}
+			// removes ghost after isClear is true
+			else if (this.sprites[i].isGhost()) 
+			{
+				if (this.sprites[i].isClear) 
+				{
+					this.sprites.splice(i, 1);
+					i--;
+				}
+			}	
+			// for wall
+			if (this.sprites[i] instanceof Wall && this.sprites[i].isWall())
+			{
+				for (let j = 0; j < this.sprites.length; j++)
+				{
+					//for fruit
+					if (this.sprites[j].isFruit())
+					{
+						this.fruit = this.sprites[j];
+						let checkC = this.collision(this.sprites[i], this.sprites[j]);
+						if (checkC == true)
+						{
+							this.fruit.speed = -this.fruit.speed;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+class View 
+{
+    constructor(model) 
+	{
+        this.model = model;
+        this.canvas = document.getElementById("myCanvas");
+        this.ctx = this.canvas.getContext("2d");
+        this.scrollPosY = 0;
+    }
+
+	worldW = 500;
+    worldH = 3000;
+    viewW = 500;
+    viewH = 500;
+
+    update() 
+	{
+		this.ctx.clearRect(0, 0, this.viewW, this.viewH);
+		for (let i = 0; i < this.model.sprites.length; i++) 
+		{
+			let sprite = this.model.sprites[i];
+			sprite.draw(this.ctx, this.scrollPosY);
+		}
+	}
+
+    moveCam() 
+	{
+        let pacmanY = this.model.pacman.y;
+        this.scrollPosY = Math.max(0, pacmanY - this.viewH / 2);
+        this.scrollPosY = Math.min(this.scrollPosY, this.worldH - this.viewH);
+    }
+}
+
+class Controller 
+{
+	constructor(model, view) 
+	{
+		this.model = model;
+		this.view = view;
+		this.key_right = false;
+		this.key_left = false;
+		this.key_up = false;
+		this.key_down = false;
+		let self = this;
+		document.addEventListener('keydown', function (event) { self.keyDown(event); }, false);
+		document.addEventListener('keyup', function (event) { self.keyUp(event); }, false);
+		view.canvas.addEventListener("click", function (event) { self.mouseClick(event); });
+	}
+
+	keyDown(event) 
+	{
+		if (event.keyCode == 39) this.key_right = true;
+		else if (event.keyCode == 37) this.key_left = true;
+		else if (event.keyCode == 38) this.key_up = true;
+		else if (event.keyCode == 40) this.key_down = true;
+		if (event.keyCode == 69) // 'e' key
+		{
+			this.toggleEditMode();
+		} 
+		else if (this.model.editMode) 
+		{
+			if (event.keyCode == 71) // 'g' key
+			{
+				this.toggleAddGhostsMode();
+			} 
+			else if (event.keyCode == 80) // 'p' key
+			{
+				this.toggleAddPelletsMode();
+			} 
+			else if (event.keyCode == 70) // 'f' key
+			{
+				this.toggleAddFruitMode();
+			}
+		}
+	}
+
+	keyUp(event) 
+	{
+		if (event.keyCode == 39) this.key_right = false;
+		else if (event.keyCode == 37) this.key_left = false;
+		else if (event.keyCode == 38) this.key_up = false;
+		else if (event.keyCode == 40) this.key_down = false;
+	}
+
+	mouseClick(event) 
+	{
+		const canvasRect = this.view.canvas.getBoundingClientRect();
+		const mouseX = event.clientX - canvasRect.left;
+		const mouseY = event.clientY - canvasRect.top + this.view.scrollPosY;
+		
+		if (this.model.editMode) 
+		{
+			if (this.model.addGhostsMode) 
+			{
+				this.model.sprites.push(new Ghost(mouseX, mouseY, 50, 50, "pacmanImages/blinky1.png"));
+			} 
+			else if (this.model.addPelletsMode) 
+			{
+				this.model.sprites.push(new Pellet(mouseX, mouseY, 10, 10, "pacmanImages/pellet.png"));
+			} 
+			else if (this.model.addFruitMode) 
+			{
+				this.model.sprites.push(new Fruit(mouseX, mouseY, 50, 50, "pacmanImages/fruit2.png"));
+			}
+			this.view.update();
+		}
+	}
+
+	toggleEditMode() 
+	{
+		this.model.editMode = !this.model.editMode;
+		if (!this.model.editMode) 
+		{
+			this.model.addGhostsMode = false;
+			this.model.addPelletsMode = false;
+			this.model.addFruitMode = false;
+		}
+	}
+
+	toggleAddGhostsMode() 
+	{
+		this.model.addGhostsMode = true;
+		this.model.addPelletsMode = false;
+		this.model.addFruitMode = false;
+	}
+
+	toggleAddPelletsMode() 
+	{
+		this.model.addPelletsMode = true;
+		this.model.addGhostsMode = false;
+		this.model.addFruitMode = false;
+	}
+
+	toggleAddFruitMode() 
+	{
+		this.model.addFruitMode = true;
+		this.model.addGhostsMode = false;
+		this.model.addPelletsMode = false;
+	}
+
+	update() 
+	{
+		if (this.key_up) 
+		{
+			this.model.pacman.y -= 10;
+			this.model.pacman.direction = 1;
+			this.model.pacman.currentImage++;
+		}
+		if (this.key_down) 
+		{
+			this.model.pacman.y += 10;
+			this.model.pacman.direction = 3;
+			this.model.pacman.currentImage++;
+		}
+		if (this.key_left) 
+		{
+			this.model.pacman.x -= 10;
+			this.model.pacman.direction = 0;
+			if (this.model.pacman.x < 0) 
+			{
+				this.model.pacman.x = 500;
+			}
+			this.model.pacman.currentImage++;
+		}
+		if (this.key_right) 
+		{
+			this.model.pacman.x += 10;
+			this.model.pacman.direction = 2;
+			if (this.model.pacman.x > 500)
+			{
+				this.model.pacman.x = 0;
+			}
+			this.model.pacman.currentImage++;
+		}
+	}
+}
+
+class Game
+{
+	constructor()
+	{
+		this.model = new Model();
+		this.view = new View(this.model);
+		this.controller = new Controller(this.model, this.view);
+	}
+
+	onTimer()
+	{
+		this.controller.update();
+		this.model.update();
+		this.view.moveCam();
+		this.view.update();
+	}
+}
+
+let game = new Game();
+let timer = setInterval(function() { game.onTimer(); }, 40);
+
+</script>
+
+</body>
