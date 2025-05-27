@@ -22,6 +22,6 @@ While in edit mode:
  - Add ghosts: g
  - Add fruits: f
  - Add pellets: p
- - Exit edit mode: e (again)
+ - Exit edit mode: e (again) <br/>
 Save map: s
 Load map: l
